@@ -1,0 +1,38 @@
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../font/CrimsonText-Regular.woff2') format('woff2'),
+    url('../font/CrimsonText-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../font/CrimsonText-SemiBold.woff2') format('woff2'),
+    url('../font/CrimsonText-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../font/CrimsonText-Bold.woff2') format('woff2'),
+    url('../font/CrimsonText-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Crimson Text';
+    src: url('../font/CrimsonText-SemiBoldItalic.woff2') format('woff2'),
+    url('../font/CrimsonText-SemiBoldItalic.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+}
+
+$font-base: 'Crimson Text', serif;
+$light-theme: #F3ECCE;
+$primary-theme: #E9D79F;
+$green-forest: #4F6F52;
+

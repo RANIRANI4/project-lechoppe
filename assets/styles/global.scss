@@ -1,5 +1,56 @@
 @import "~bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
+@import 'variables.scss';
+@import 'button.scss';
+@import 'form.scss';
 
-body {
-    background: #0d6efd;
+html, body {
+    font-family: $font-base;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+h1 {
+    font-weight: 700;
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 2.25rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+h4 {
+    font-weight: 700;
+    font-size: 1.5rem;
+
+}
+
+h5 {
+    font-size: 1.25rem;
+}
+
+
+h6 {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+label {
+    font-size: 1.25rem;
+}
+
+p {
+    font-size: 1rem;
+}
+
+small {
+    font-size: 0.85rem;
+}
+
+.bg-light-theme {
+    background: $light-theme;
 }

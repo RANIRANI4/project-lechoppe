@@ -1,0 +1,64 @@
+.btn-base {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    font-weight: 700;
+}
+
+.btn-beige {
+    padding: 10px 30px;
+    height: 40px;
+    @extend .btn-base;
+    background: $light-theme;
+    border: 1px solid $green-forest;
+    color: $green-forest;
+
+}
+
+.btn-green {
+    padding: 10px 30px;
+    height: 40px;
+    @extend .btn-base;
+    background: $green-forest;
+    border-radius: 50px;
+    border: none;
+    color: $light-theme;
+
+}
+
+.selected-filter {
+    @extend .btn-base;
+    height: 30px;
+    padding: 10px 10px;
+    background: #404441;
+    color: #ffffff;
+}
+
+.filter {
+    @extend .btn-base;
+    height: 30px;
+    padding: 10px 10px;
+    background: #D9D6DE;
+    border: none;
+}
+
+.add-remove {
+
+    @extend .btn-green;
+    gap: 10px;
+
+    .add-remove-divider{
+        transform: rotate(90deg);
+    }
+
+    button{
+        background: transparent;
+        border: none;
+
+        i{
+            font-size: 25px;
+            color: $light-theme;
+        }
+    }
+}
