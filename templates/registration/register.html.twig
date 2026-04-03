@@ -3,11 +3,13 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <div>
-        {{ form_errors(registrationForm) }}
+    <div class=" w-75 mx-auto">
+        <h5>
+            Création de mon compte
+        </h5>
         {{ form_start(registrationForm, {
             attr:{
-                class: 'bg-light-theme py-3 px-3 w-75 mx-auto'
+                class: 'bg-light-theme py-3 px-3'
             }
         }) }}
 
