@@ -1,0 +1,6 @@
+{{ form_start(newShopForm, {attr:{
+    class: 'bg-light-theme py-3 px-3'
+}}) }}
+    {{ form_widget(newShopForm) }}
+<button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(newShopForm) }}

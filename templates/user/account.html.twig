@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create user{% endblock %}
+
+
+{% block body %}
+
+
+
+{#    {% include 'partials/_productor-navbar.html.twig' %}#}
+
+
+
+
+
+    <h5>Mon compte</h5>
+
+    <div>
+
+        <div class="card bg-primary-theme" style=" width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ user.email }}</h6>
+            </div>
+        </div>
+
+    </div>
+    <div class="py-5">
+
+
+        <h5>Mes échoppes</h5>
+    </div>
+
+
+{% endblock %}
