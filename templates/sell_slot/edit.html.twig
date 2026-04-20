@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit SellSlot{% endblock %}
+
+{% block body %}
+    <h1>Edit SellSlot</h1>
+
+    {{ include('sell_slot/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_sell_slot_index') }}">back to list</a>
+
+    {{ include('sell_slot/_delete_form.html.twig') }}
+{% endblock %}

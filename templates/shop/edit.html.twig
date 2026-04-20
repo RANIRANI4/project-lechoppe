@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Shop{% endblock %}
+
+{% block body %}
+
+<div class=" w-75 mx-auto">
+    <div class="d-flex  justify-content-between py-3">
+
+        <h5>
+            Je modifie mon échoppe
+        </h5>
+        <a href="{{ path('app_user_account') }}" class="btn-beige">
+            Annuler
+        </a>
+    </div>
+
+    {{ include('shop/_shop-form.html.twig') }}
+
+    {% endblock %}

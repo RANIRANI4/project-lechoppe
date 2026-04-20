@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SellSlot{% endblock %}
+
+{% block body %}
+    <h1>SellSlot</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ sell_slot.id }}</td>
+            </tr>
+            <tr>
+                <th>StartDate</th>
+                <td>{{ sell_slot.startDate ? sell_slot.startDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndDate</th>
+                <td>{{ sell_slot.endDate ? sell_slot.endDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ sell_slot.createdAt ? sell_slot.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ sell_slot.updatedAt ? sell_slot.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_sell_slot_index') }}">back to list</a>
+
+    <a href="{{ path('app_sell_slot_edit', {'id': sell_slot.id}) }}">edit</a>
+
+    {{ include('sell_slot/_delete_form.html.twig') }}
+{% endblock %}
