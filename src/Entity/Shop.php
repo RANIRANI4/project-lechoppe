@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\ShopRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ShopRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Shop
 {
     #[ORM\Id]
@@ -39,7 +42,18 @@ class Shop
     private ?\DateTime $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'shops')]
-    private ?User $Productor = null;
+    private ?User $producer = null;
+
+    /**
+     * @var Collection<int, SellSlot>
+     */
+    #[ORM\OneToMany(targetEntity: SellSlot::class, mappedBy: 'shop')]
+    private Collection $sellSlots;
+
+    public function __construct()
+    {
+        $this->sellSlots = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -142,14 +156,57 @@ class Shop
         return $this;
     }
 
-    public function getProductor(): ?User
+    public function getProducer(): ?User
     {
-        return $this->Productor;
+        return $this->producer;
     }
 
-    public function setProductor(?User $Productor): static
+    public function setProducer(?User $producer): static
     {
-        $this->Productor = $Productor;
+        $this->producer = $producer;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTime();
+    }
+
+    /**
+     * @return Collection<int, SellSlot>
+     */
+    public function getSellSlots(): Collection
+    {
+        return $this->sellSlots;
+    }
+
+    public function addSellSlot(SellSlot $sellSlot): static
+    {
+        if (!$this->sellSlots->contains($sellSlot)) {
+            $this->sellSlots->add($sellSlot);
+            $sellSlot->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSellSlot(SellSlot $sellSlot): static
+    {
+        if ($this->sellSlots->removeElement($sellSlot)) {
+            // set the owning side to null (unless already changed)
+            if ($sellSlot->getShop() === $this) {
+                $sellSlot->setShop(null);
+            }
+        }
 
         return $this;
     }

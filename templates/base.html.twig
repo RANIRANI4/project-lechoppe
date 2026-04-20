@@ -14,7 +14,14 @@
     {% endblock %}
 </head>
 <body>
-{% include 'partials/_navbar.html.twig' %}
+
+{% if not app.user %}
+    {% include 'partials/_navbar.html.twig' %}
+
+{% elseif is_granted('ROLE_USER') %}
+    {% include 'partials/_user-navbar.html.twig' %}
+
+{% endif %}
 
 
 <main class="container py-4">

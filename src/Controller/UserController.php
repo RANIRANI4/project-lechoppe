@@ -7,13 +7,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/user')]
 final class UserController extends AbstractController
 {
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    #[Route('/account', name: 'app_user_account', methods: ['GET'])]
+    public function account(): Response
     {
+        $currentUser = $this->getUser();
+
         return $this->render('user/account.html.twig', [
-            'user' => $user,
+            'user' => $currentUser,
         ]);
     }
 }

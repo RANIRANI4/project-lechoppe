@@ -1,13 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Shop{% endblock %}
+{% block title %}New Shop{% endblock %}
 
 {% block body %}
-    <h1>Edit Shop</h1>
 
-    {{ include('shop/_form.html.twig', {'button_label': 'Update'}) }}
+<div class=" w-75 mx-auto">
+    <div class="d-flex  justify-content-between py-3">
 
-    <a href="{{ path('app_shop_index') }}">back to list</a>
+        <h5>
+            Je modifie mon échoppe
+        </h5>
+        <a href="{{ path('app_user_account') }}" class="btn-beige">
+            Annuler
+        </a>
+    </div>
 
-    {{ include('shop/_delete_form.html.twig') }}
-{% endblock %}
+    {{ include('shop/_shop-form.html.twig') }}
+
+    {% endblock %}

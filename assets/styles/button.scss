@@ -17,6 +17,18 @@
 
 }
 
+.btn-my-danger {
+    padding: 10px 30px;
+    height: 40px;
+    @extend .btn-base;
+    background: $light-theme;
+    border: 1px solid $myRed;
+    color: $myRed
+
+}
+
+
+
 .btn-beige-black {
     padding: 10px 30px;
     height: 40px;
@@ -31,7 +43,7 @@
     @extend .btn-base;
     background: $green-forest;
     border-radius: 50px;
-    border: none;
+    border: 1px solid $light-theme;
     color: $light-theme;
 
 }
