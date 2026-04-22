@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SellSlotRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SellSlotRepository::class)]
@@ -27,6 +29,17 @@ class SellSlot
 
     #[ORM\ManyToOne(inversedBy: 'sellSlots')]
     private ?Shop $shop = null;
+
+    /**
+     * @var Collection<int, Product>
+     */
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'sellSlots')]
+    private Collection $products;
+
+    public function __construct()
+    {
+        $this->products = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +102,33 @@ class SellSlot
     public function setShop(?Shop $shop): static
     {
         $this->shop = $shop;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Product>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Product $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->addSellSlot($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            $product->removeSellSlot($this);
+        }
 
         return $this;
     }
