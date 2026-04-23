@@ -37,8 +37,8 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?\DateTime $createdAt = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $label = null;
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $certifications = [];
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?User $producer = null;
@@ -143,15 +143,14 @@ class Product
         return $this;
     }
 
-    public function getLabel(): ?string
+    public function getCertifications(): array
     {
-        return $this->label;
+        return $this->certifications;
     }
 
-    public function setLabel(?string $label): static
+    public function setCertifications(array $certifications): static
     {
-        $this->label = $label;
-
+        $this->certifications = $certifications;
         return $this;
     }
 

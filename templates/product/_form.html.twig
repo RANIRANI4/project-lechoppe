@@ -1,0 +1,38 @@
+{{ form_start(form, {attr:{
+    class: 'bg-light-theme py-3 px-3'
+}}) }}
+
+    {{ form_row(form.title) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.unit) }}
+    {{ form_row(form.price) }}
+
+    {# Labels en ligne #}
+<div class="mb-3">
+    {{ form_label(form.certifications) }}
+    <div class="d-flex flex-wrap gap-2">
+        {% for label in form.certifications %}
+            <div class="form-check form-check-inline">
+                {{ form_widget(label) }}
+                {{ form_label(label) }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{# SellSlots en ligne #}
+<div class="mb-3">
+    {{ form_label(form.sellSlots) }}
+    <div class="d-flex flex-wrap gap-2">
+        {% for sellSlot in form.sellSlots %}
+            <div class="form-check form-check-inline">
+                {{ form_widget(sellSlot) }}
+                {{ form_label(sellSlot) }}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<button type="submit" class="btn-green">Créer mon produit</button>
+
+{{ form_end(form) }}

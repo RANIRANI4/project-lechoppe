@@ -1,8 +1,12 @@
+<?php
+
+
 namespace App\Config;
 
-enum TextAlign: string
+enum EnumLabel: string
 {
-case Left = 'Left aligned';
-case Center = 'Center aligned';
-case Right = 'Right aligned';
+    case Bio = 'Bio';
+    case NatureProgres = 'Nature & Progrès';
+    case Aop = 'AOP';
+    case Aoc = 'AOC';
 }
