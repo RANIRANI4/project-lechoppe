@@ -9,7 +9,6 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,7 +18,7 @@ class SellSlotType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         if (!$options['current_user']){
-            throw new \Exception("You must be logged in to sell slot.");
+            throw new \Exception("vous devez être connecté pour accéder à cette page.");
         }
 
         $builder

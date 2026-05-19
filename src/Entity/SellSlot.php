@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumState;
 use App\Repository\SellSlotRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -35,6 +36,20 @@ class SellSlot
      */
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'sellSlots')]
     private Collection $products;
+
+    #[ORM\Column(type: 'string', enumType: EnumState::class)]
+    private EnumState $state = EnumState::Active;
+
+    public function getState(): EnumState
+    {
+        return $this->state;
+    }
+
+    public function setState(EnumState $state): static
+    {
+        $this->state = $state;
+        return $this;
+    }
 
     public function __construct()
     {

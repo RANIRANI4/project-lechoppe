@@ -7,27 +7,30 @@
         <h5>Mes échoppes</h5>
         <a href="{{ path('app_sell_slot_new') }}" class="btn-beige">Nouveau créneau</a>
     </div>
+    <div class="d-flex flex-wrap gap-2 py-3">
 
-    {% for sell_slot in sell_slots %}
+        {% for sell_slot in sell_slots %}
 
-        <div class="card bg-light-theme rounded-4" style=" width: 17rem;">
-            <div class="card-body">
-                <h5 class="card-title">{{ sell_slot.shop.getName }}  </h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">
-                    Le {{ sell_slot.startDate ? sell_slot.startDate|date('d-m-y') : '' }}</h6>
-                <h6 class="card-subtitle mb-2 text-body-secondary">
-                    de {{ sell_slot.startDate ? sell_slot.startDate|date('H:i') : '' }}
-                    à {{ sell_slot.endDate ? sell_slot.endDate|date('H:i') : '' }}</h6>
-                <a href="{{ path('app_sell_slot_show', {'id': sell_slot.id}) }}" class=" btn-green">Voir la vente</a>
+            <div class="card bg-light-theme rounded-4" style=" width: 17rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ sell_slot.shop.getName }}  </h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">
+                        Le {{ sell_slot.startDate ? sell_slot.startDate|date('d-m-y') : '' }}</h6>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">
+                        de {{ sell_slot.startDate ? sell_slot.startDate|date('H:i') : '' }}
+                        à {{ sell_slot.endDate ? sell_slot.endDate|date('H:i') : '' }}</h6>
+                    <a href="{{ path('app_sell_slot_show', {'id': sell_slot.id}) }}" class=" btn-green">Voir la
+                        vente</a>
 
+                </div>
             </div>
-        </div>
 
-    {% else %}
-        <tr>
-            <td colspan="6">no records found</td>
-        </tr>
-    {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
 
+    </div>
 
 {% endblock %}

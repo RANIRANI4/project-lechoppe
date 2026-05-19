@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Shop;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,30 @@ class ShopRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Shop::class);
+    }
+
+    public function findByDistance(float $lat, float $lng, float $radius = 20): array
+    {
+        $mappingEntity = new ResultSetMappingBuilder($this->getEntityManager());
+        $mappingEntity->addRootEntityFromClassMetadata(Shop::class, 's');
+
+        $sql = '
+        SELECT ' . $mappingEntity->generateSelectClause(['s' => 's']) . ',
+        ST_Distance_Sphere(
+            POINT(s.longitude, s.latitude),
+            POINT(:lng, :lat)
+        ) / 1000 AS distance
+        FROM shop s
+        WHERE s.latitude IS NOT NULL
+        HAVING distance < :radius
+        ORDER BY distance ASC
+    ';
+
+        $query = $this->getEntityManager()->createNativeQuery($sql, $mappingEntity);
+        $query->setParameter('lat', $lat);
+        $query->setParameter('lng', $lng);
+        $query->setParameter('radius', $radius);
+        return $query->getResult();
     }
 
     //    /**

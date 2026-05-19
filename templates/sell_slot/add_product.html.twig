@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un produit{% endblock %}
+
+{% block body %}
+    <div class="w-75 mx-auto">
+        <div class="d-flex justify-content-between py-3">
+            <h5>
+                Ajouter un produit à {{ sellSlot.shop.name }}
+            </h5>
+            <a href="{{ path('app_sell_slot_show', {'id': sellSlot.id}) }}" class="btn-beige">Annuler</a>
+        </div>
+
+        {{ form_start(form) }}
+        {{ form_row(form.product) }}
+        <button type="submit" class="btn-beige">Ajouter</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

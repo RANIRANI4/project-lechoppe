@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Enum\EnumState;
+use App\Form\AddSellSlotToProductType;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,8 +20,13 @@ final class ProductController extends AbstractController
     #[Route(name: 'app_product_index', methods: ['GET'])]
     public function index(ProductRepository $productRepository): Response
     {
+        $currentUser = $this->getUser();
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findAll(),
+            'products' => $productRepository->findBy([
+                'state' => EnumState::Active,
+                'producer' => $currentUser
+            ]),
+            'user' => $currentUser,
         ]);
     }
 
@@ -36,6 +43,19 @@ final class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $product->setProducer($currentUser);
+            $product->setSlug($slugger->slug($product->getTitle())->lower() . '-' . $product->getId());
+
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move(
+                    __DIR__ . '/../../public/uploads/products',
+                    $newFilename
+                );
+                $product->setImageFileName($newFilename);
+            }
 
             $entityManager->persist($product);
             $entityManager->flush();
@@ -60,10 +80,24 @@ final class ProductController extends AbstractController
     #[Route('/{id}/edit', name: 'app_product_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ProductType::class, $product);
+        $currentUser = $this->getUser();
+
+        $form = $this->createForm(ProductType::class, $product, [
+            'current_user' => $currentUser
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move(
+                    __DIR__ . '/../../public/uploads/products',
+                    $newFilename
+                );
+                $product->setImageFileName($newFilename);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
@@ -79,10 +113,37 @@ final class ProductController extends AbstractController
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($product);
+            $product->setState(EnumState::Inactive);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/add-sell-slot', name: 'app_product_add_sell_slot', methods: ['GET', 'POST'])]
+    public function addSellSlot(Product $product, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $currentUser = $this->getUser();
+
+        $form = $this->createForm(AddSellSlotToProductType::class, null, [
+            'current_user' => $currentUser,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $sellSlot = $form->get('sellSlot')->getData();
+
+            $product->addSellSlot($sellSlot);
+            $entityManager->flush();
+
+
+            return $this->redirectToRoute('app_product_show', ['id' => $product->getId()]);
+        }
+
+        return $this->render('product/add_sell_slot.html.twig', [
+            'product' => $product,
+            'form' => $form,
+        ]);
     }
 }

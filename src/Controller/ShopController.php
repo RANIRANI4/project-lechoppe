@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Shop;
 use App\Form\ShopFormType;
 use App\Repository\ShopRepository;
+use App\Service\GeocoderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ final class ShopController extends AbstractController
     }
 
     #[Route('/new', name: 'app_shop_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, GeocoderService $geocoder): Response
     {
         $shop = new Shop();
         $form = $this->createForm(ShopFormType::class, $shop);
@@ -41,6 +42,12 @@ final class ShopController extends AbstractController
                     $newFilename
                 );
                 $shop->setImageFileName($newFilename);
+            }
+            $fullAddress = $shop->getAddress() . ' ' . $shop->getZipCode() . ' ' . $shop->getCity();
+            $coords = $geocoder->geocode($fullAddress);
+            if ($coords) {
+                $shop->setLatitude($coords['latitude']);
+                $shop->setLongitude($coords['longitude']);
             }
 
             $entityManager->persist($shop);
@@ -62,13 +69,29 @@ final class ShopController extends AbstractController
             'shop' => $shop,
         ]);
     }
+
     #[Route('/{id}/edit', name: 'app_shop_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Shop $shop, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Shop $shop, EntityManagerInterface $entityManager, GeocoderService $geocoder): Response
     {
         $form = $this->createForm(ShopFormType::class, $shop);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageFile')->getData();
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                $imageFile->move(
+                    __DIR__ . '/../../public/uploads/shops',
+                    $newFilename
+                );
+                $shop->setImageFileName($newFilename);
+            }
+            $fullAddress = $shop->getAddress() . ' ' . $shop->getZipCode() . ' ' . $shop->getCity();
+            $coords = $geocoder->geocode($fullAddress);
+            if ($coords) {
+                $shop->setLatitude($coords['latitude']);
+                $shop->setLongitude($coords['longitude']);
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_shop_show', ['id' => $shop->getId()], Response::HTTP_SEE_OTHER);

@@ -3,7 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\SellSlot;
+use App\Entity\User;
+use App\Enum\EnumState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +17,16 @@ class SellSlotRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, SellSlot::class);
+    }
+
+    public function findActiveByUser(User $user): QueryBuilder
+    {
+        return $this->createQueryBuilder('ss')
+            ->join('ss.shop', 'shop')
+            ->where('shop.producer = :user')
+            ->andWhere('ss.state = :state')
+            ->setParameter('user', $user)
+            ->setParameter('state', EnumState::Active);
     }
 
     //    /**

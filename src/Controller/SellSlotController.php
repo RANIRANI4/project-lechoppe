@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\SellSlot;
+use App\Enum\EnumState;
+use App\Form\AddProductToSellSlotType;
 use App\Form\SellSlotType;
 use App\Repository\SellSlotRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,10 +19,10 @@ final class SellSlotController extends AbstractController
     #[Route(name: 'app_sell_slot_index', methods: ['GET'])]
     public function index(SellSlotRepository $sellSlotRepository): Response
     {
-
+        $currentUser = $this->getUser();
 
         return $this->render('sell_slot/index.html.twig', [
-            'sell_slots' => $sellSlotRepository->findAll(),
+            'sell_slots' => $sellSlotRepository->findActiveByUser($currentUser)->getQuery()->getResult()
         ]);
     }
 
@@ -76,10 +78,36 @@ final class SellSlotController extends AbstractController
     public function delete(Request $request, SellSlot $sellSlot, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$sellSlot->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($sellSlot);
+            $sellSlot->setState(EnumState::Inactive);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_sell_slot_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/{id}/add-product', name: 'app_sell_slot_add_product', methods: ['GET', 'POST'])]
+    public function addProduct(SellSlot $sellSlot, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $currentUser = $this->getUser();
+
+        $form = $this->createForm(AddProductToSellSlotType::class, null, [
+            'current_user' => $currentUser,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product = $form->get('product')->getData();
+
+            $sellSlot->addProduct($product);
+            $entityManager->flush();
+
+
+            return $this->redirectToRoute('app_sell_slot_show', ['id' => $sellSlot->getId()]);
+        }
+
+        return $this->render('sell_slot/add_product.html.twig', [
+            'sellSlot' => $sellSlot,
+            'form' => $form,
+        ]);
     }
 }

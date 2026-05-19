@@ -3,52 +3,38 @@
 {% block title %}Product{% endblock %}
 
 {% block body %}
-    <h1>Product</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ product.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ product.title }}</td>
-            </tr>
-            <tr>
-                <th>Slug</th>
-                <td>{{ product.slug }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ product.description }}</td>
-            </tr>
-            <tr>
-                <th>Unit</th>
-                <td>{{ product.unit }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td>{{ product.price }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Label</th>
-                <td>{{ product.label }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container py-3">
+        <div class="row">
 
-    <a href="{{ path('app_product_index') }}">back to list</a>
+            <div class="col-12 col-md-5">
+                {% if product.imageFileName %}
+                    <img src="{{ asset('uploads/products/' ~ product.imageFileName) }}"
+                         class="img-fluid rounded-3" alt="illustration de l'échoppe"
+                         style="height: 300px; object-fit: cover; width: 100%;">
+                {% else %}
+                    <img src="{{ asset('images/default-product.png') }}"
+                         class="img-fluid rounded-3" alt="image par défaut">
+                {% endif %}
+            </div>
 
-    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
+            <div class="col-12 col-md-7 ps-md-4">
+                <h2>{{ product.title }}</h2>
+                <h4>{{ product.price }}€ / {{ product.unit }}</h4>
+                <p>{{ product.description }}</p>
 
-    {{ include('product/_delete_form.html.twig') }}
+                <div class="d-flex gap-3 py-3">
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn-beige">
+                        Modifier le produit
+                    </a>
+                    <a href="{{ path('app_product_add_sell_slot', {'id': product.id}) }}" class="btn-beige">
+                        Ajouter à un créneau
+                    </a>
+                    {{ include('product/_delete_form.html.twig') }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 {% endblock %}

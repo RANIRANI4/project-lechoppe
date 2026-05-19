@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumLabel;
+use App\Enum\EnumState;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,7 +40,21 @@ class Product
     private ?\DateTime $createdAt = null;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    private array $certifications = [];
+    private ?array $certifications = [];
+
+    #[ORM\Column(type: 'string', enumType: EnumState::class)]
+    private EnumState $state = EnumState::Active;
+
+    public function getState(): EnumState
+    {
+        return $this->state;
+    }
+
+    public function setState(EnumState $state): static
+    {
+        $this->state = $state;
+        return $this;
+    }
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?User $producer = null;
@@ -48,6 +64,9 @@ class Product
      */
     #[ORM\ManyToMany(targetEntity: SellSlot::class, inversedBy: 'products')]
     private Collection $sellSlots;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageFileName = null;
 
     public function __construct()
     {
@@ -145,12 +164,19 @@ class Product
 
     public function getCertifications(): array
     {
-        return $this->certifications;
+        return array_map(
+            fn(string $value) => EnumLabel::from($value),
+            $this->certifications ?? []
+        );
     }
 
     public function setCertifications(array $certifications): static
     {
-        $this->certifications = $certifications;
+        $this->certifications = array_map(
+            fn(EnumLabel $enum) => $enum->value,
+            $certifications
+        );
+
         return $this;
     }
 
@@ -186,6 +212,18 @@ class Product
     public function removeSellSlot(SellSlot $sellSlot): static
     {
         $this->sellSlots->removeElement($sellSlot);
+
+        return $this;
+    }
+
+    public function getImageFileName(): ?string
+    {
+        return $this->imageFileName;
+    }
+
+    public function setImageFileName(?string $imageFileName): static
+    {
+        $this->imageFileName = $imageFileName;
 
         return $this;
     }
