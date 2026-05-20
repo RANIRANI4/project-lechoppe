@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/user/shop')]
 final class ShopController extends AbstractController
 {
+
+
     #[Route(name: 'app_shop_index', methods: ['GET'])]
     public function index(ShopRepository $shopRepository): Response
     {
