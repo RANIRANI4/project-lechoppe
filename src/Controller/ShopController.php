@@ -12,12 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/user/shop')]
 final class ShopController extends AbstractController
 {
 
 
-    #[Route(name: 'app_shop_index', methods: ['GET'])]
+    #[Route('/shop',name: 'app_shop_index', methods: ['GET'])]
     public function index(ShopRepository $shopRepository): Response
     {
         return $this->render('shop/index.html.twig', [
@@ -25,7 +24,7 @@ final class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_shop_new', methods: ['GET', 'POST'])]
+    #[Route('/user/shop/new', name: 'app_shop_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, GeocoderService $geocoder): Response
     {
         $shop = new Shop();
@@ -64,7 +63,7 @@ final class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_shop_show', methods: ['GET'])]
+    #[Route('/shop/{id}', name: 'app_shop_show', methods: ['GET'])]
     public function show(Shop $shop): Response
     {
         return $this->render('shop/show.html.twig', [
@@ -72,7 +71,7 @@ final class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_shop_edit', methods: ['GET', 'POST'])]
+    #[Route('/user/shop/{id}/edit', name: 'app_shop_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Shop $shop, EntityManagerInterface $entityManager, GeocoderService $geocoder): Response
     {
         $form = $this->createForm(ShopFormType::class, $shop);
@@ -105,7 +104,7 @@ final class ShopController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_shop_delete', methods: ['POST'])]
+    #[Route('/user/shop/{id}', name: 'app_shop_delete', methods: ['POST'])]
     public function delete(Request $request, Shop $shop, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $shop->getId(), $request->getPayload()->getString('_token'))) {

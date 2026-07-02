@@ -34,7 +34,81 @@
             </div>
 
         </div>
-        <h5>Mes ventes à venir</h5>
-    </div>
+        <h5 class="mt-4">Mes ventes à venir</h5>
+
+        {% for sell_slot in shop.sellSlots %}
+
+            <div class="d-flex justify-content-between align-items-center py-3">
+                <h6 class="mb-0">Vente du {{ sell_slot.startDate ? sell_slot.startDate|date('d-m-y') : '' }}</h6>
+                <a href="{{ path('app_sell_slot_show', {'id': sell_slot.id}) }}" class="btn-green">
+                    Voir toute la vente
+                </a>
+            </div>
+
+            <div class="d-flex gap-3 overflow-x-auto pb-3">
+                {% for product in sell_slot.products %}
+
+                    <div class="card rounded-4 bg-light-theme border-0 overflow-hidden flex-shrink-0"
+                         style="width: 17rem;">
+
+                        {# --- Image avec certifications en overlay --- #}
+                        <div class="position-relative">
+                            {% if product.imageFileName %}
+                                <img src="{{ asset('uploads/products/' ~ product.imageFileName) }}"
+                                     class="card-img-top" alt="illustration du produit"
+                                     style="width: 100%; height: 280px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ asset('images/default-product.png') }}" class="card-img-top"
+                                     alt="image par défaut"
+                                     style="width: 100%; height: 280px; object-fit: cover;">
+                            {% endif %}
+
+                            {% if product.certifications is not empty %}
+                                <div class="position-absolute bottom-0 start-0 p-2 d-flex flex-wrap gap-1">
+                                    {% for certification in product.certifications %}
+                                        <span
+                                            class="badge bg-light-theme text-green-theme border border-green-theme rounded-pill px-3 py-1">
+                                            {{ certification.value }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <p class="card-text mb-0 fs-5">{{ product.price }}€ {{ product.unit }}</p>
+                            <span class="badge bg-light-theme text-dark border rounded-pill px-3 py-1 fs-6">
+                                {{ cart_quantity(product.id) }}
+                            </span>
+                        </div>
+
+                        {# --- Footer vert avec boutons -/+ --- #}
+                        <div class="add-remove py-3">
+                            <form action="{{ path('app_cart_remove', {'id': product.id}) }}" method="post" class="m-0">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart-remove' ~ product.id) }}">
+                                <button type="submit">
+                                    <i class="bi bi-dash-square"></i>
+                                </button>
+                            </form>
+
+                            <span>|</span>
+
+                            <form action="{{ path('app_cart_add', {'id': product.id}) }}" method="post" class="m-0">
+                                <input type="hidden" name="_token" value="{{ csrf_token('cart-add' ~ product.id) }}">
+                                <button type="submit">
+                                    <i class="bi bi-plus-square"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <p>Aucun produit dans ce créneau.</p>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <p>Aucune vente prévue pour le moment.</p>
+        {% endfor %}    </div>
 
 {% endblock %}

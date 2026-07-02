@@ -1,0 +1,41 @@
+<nav class="navbar bg-green-theme d-md-none">
+    <div class="container-fluid justify-content-center">
+        <a class="navbar-brand m-0" style="color: #F3ECCE" href="{{ path('app_home') }}">L'ECHOPPE</a>
+    </div>
+</nav>
+
+{# Bottom bar fixée en bas #}
+<nav class="navbar fixed-bottom bg-green-theme d-md-none border-top">
+    <ul class="nav nav-fill w-100 m-0">
+        <li class="nav-item">
+            <a class="nav-link text-center px-1" style="color: #F3ECCE" href="{{ path('app_home') }}">
+                <i class="bi bi-search d-block fs-5"></i>
+                <small>Recherche</small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-center px-1" style="color: #F3ECCE" href="{{ path('app_user_account') }}">
+                <i class="bi bi-person d-block fs-5"></i>
+                <small>Compte</small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-center px-1" style="color: #F3ECCE" href="{{ path('app_sell_slot_index') }}">
+                <i class="bi bi-calendar-event d-block fs-5"></i>
+                <small>Ventes</small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-center px-1" style="color: #F3ECCE" href="{{ path('app_product_index') }}">
+                <i class="bi bi-box-seam d-block fs-5"></i>
+                <small>Produits</small>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-center px-1" style="color: #F3ECCE" href="{{ path('app_logout') }}">
+                <i class="bi bi-box-arrow-right d-block fs-5"></i>
+                <small>Quitter</small>
+            </a>
+        </li>
+    </ul>
+</nav>

@@ -38,3 +38,11 @@ $green-forest: #4F6F52;
 $myBlack: #000;
 $myRed: #C10000;
 
+
+:root {
+    --green-forest: #{$green-forest};
+    --light-theme: #{$light-theme};
+    --myRed: #{$myRed};
+    --myBlack: #{$myBlack};
+}
+

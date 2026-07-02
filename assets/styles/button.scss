@@ -9,7 +9,7 @@
 
 .btn-beige {
     padding: 10px 30px;
-    height: 40px;
+    min-height: 40px;
     @extend .btn-base;
     background: $light-theme;
     border: 1px solid $green-forest;
@@ -19,7 +19,7 @@
 
 .btn-my-danger {
     padding: 10px 30px;
-    height: 40px;
+    min-height: 40px;
     @extend .btn-base;
     background: $light-theme;
     border: 1px solid $myRed;
@@ -28,18 +28,18 @@
 }
 
 
-
 .btn-beige-black {
     padding: 10px 30px;
-    height: 40px;
+    min-height: 40px;
     @extend .btn-base;
     background: $light-theme;
     border: 1px solid $myBlack;
-    color: $myBlack;}
+    color: $myBlack;
+}
 
 .btn-green {
     padding: 10px 30px;
-    height: 40px;
+    min-height: 40px;
     @extend .btn-base;
     background: $green-forest;
     border-radius: 50px;
@@ -50,7 +50,7 @@
 
 .selected-filter {
     @extend .btn-base;
-    height: 30px;
+    min-height: 40px;
     padding: 10px 10px;
     background: #404441;
     color: #ffffff;
@@ -58,7 +58,7 @@
 
 .filter {
     @extend .btn-base;
-    height: 30px;
+    min-height: 40px;
     padding: 10px 10px;
     background: #D9D6DE;
     border: none;
@@ -68,16 +68,15 @@
 
     @extend .btn-green;
     gap: 10px;
+    justify-content: space-between;
+    padding: 10px 40px;
 
-    .add-remove-divider{
-        transform: rotate(90deg);
-    }
 
-    button{
+    button {
         background: transparent;
         border: none;
 
-        i{
+        i {
             font-size: 25px;
             color: $light-theme;
         }
