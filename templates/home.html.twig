@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
-
+{% block title %}Trouvez des producteurs locaux près de chez vous — L'Échoppe{% endblock %}
 {% block body %}
     <div class="container mt-4">
 
@@ -20,11 +19,15 @@
             </div>
         </form>
 
-        {% if shops %}
-            {% if location %}
-            <p>{{ shops|length }} échoppe(s) trouvée(s) près de "{{ location }}"</p>
+        {% if location %}
+            {% if shops %}
+                <p>{{ shops|length }} échoppe(s) trouvée(s) près de "{{ location }}"</p>
+            {% else %}
+                <p>Aucune échoppe trouvée près de "{{ location }}".</p>
             {% endif %}
+        {% endif %}
 
+        {% if shops %}
             <div class="row g-4">
                 {% for shop in shops %}
                     <div class="col-12 col-md-6 col-lg-4">
@@ -58,6 +61,34 @@
                     </div>
                 {% endfor %}
             </div>
+        {% endif %}
+
+        {% if totalPages is not null and totalPages > 1 %}
+            <nav aria-label="Pagination des échoppes" class="mt-4 mb-5 pb-4">
+                <ul class="pagination justify-content-center">
+
+                    <li class="page-item {{ currentPage <= 1 ? 'disabled' }}">
+                        <a class="page-link" href="{{ path('app_home', {page: currentPage - 1}) }}">
+                            Précédent
+                        </a>
+                    </li>
+
+                    {% for i in 1..totalPages %}
+                        <li class="page-item {{ i == currentPage ? 'active' }}">
+                            <a class="page-link" href="{{ path('app_home', {page: i}) }}">
+                                {{ i }}
+                            </a>
+                        </li>
+                    {% endfor %}
+
+                    <li class="page-item {{ currentPage >= totalPages ? 'disabled' }}">
+                        <a class="page-link" href="{{ path('app_home', {page: currentPage + 1}) }}">
+                            Suivant
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
         {% endif %}
     </div>
 {% endblock %}

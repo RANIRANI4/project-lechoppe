@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Shop{% endblock %}
-{% block body %}
+{% block title %}{{ shop.name }} — L'Échoppe{% endblock %}{% block body %}
     <div class="container py-3">
         <div class="row">
-
             <div class="col-12 col-md-5">
                 {% if shop.imageFileName %}
                     <img src="{{ asset('uploads/shops/' ~ shop.imageFileName) }}"
@@ -22,18 +20,16 @@
                 <p>{{ shop.description }}</p>
 
                 {% if app.user and app.user == shop.producer %}
-
                     <div class="d-flex gap-3 py-3">
                         <a href="{{ path('app_shop_edit', {'id': shop.id}) }}" class="btn-beige">
                             Modifier l'échoppe
                         </a>
-                        {{ include('shop/_delete_form.html.twig') }}
                     </div>
                 {% endif %}
-
             </div>
 
         </div>
+
         <h5 class="mt-4">Mes ventes à venir</h5>
 
         {% for sell_slot in shop.sellSlots %}
@@ -51,23 +47,17 @@
                     <div class="card rounded-4 bg-light-theme border-0 overflow-hidden flex-shrink-0"
                          style="width: 17rem;">
 
-                        {# --- Image avec certifications en overlay --- #}
                         <div class="position-relative">
                             {% if product.imageFileName %}
                                 <img src="{{ asset('uploads/products/' ~ product.imageFileName) }}"
                                      class="card-img-top" alt="illustration du produit"
-                                     style="width: 100%; height: 280px; object-fit: cover;">
-                            {% else %}
-                                <img src="{{ asset('images/default-product.png') }}" class="card-img-top"
-                                     alt="image par défaut"
                                      style="width: 100%; height: 280px; object-fit: cover;">
                             {% endif %}
 
                             {% if product.certifications is not empty %}
                                 <div class="position-absolute bottom-0 start-0 p-2 d-flex flex-wrap gap-1">
                                     {% for certification in product.certifications %}
-                                        <span
-                                            class="badge bg-light-theme text-green-theme border border-green-theme rounded-pill px-3 py-1">
+                                        <span class="badge bg-light-theme text-green-theme border border-green-theme rounded-pill px-3 py-1">
                                             {{ certification.value }}
                                         </span>
                                     {% endfor %}
@@ -82,24 +72,25 @@
                             </span>
                         </div>
 
-                        {# --- Footer vert avec boutons -/+ --- #}
-                        <div class="add-remove py-3">
-                            <form action="{{ path('app_cart_remove', {'id': product.id}) }}" method="post" class="m-0">
-                                <input type="hidden" name="_token" value="{{ csrf_token('cart-remove' ~ product.id) }}">
-                                <button type="submit">
-                                    <i class="bi bi-dash-square"></i>
-                                </button>
-                            </form>
+                        {% if not app.user %}
+                            <div class="add-remove py-3">
+                                <form action="{{ path('app_cart_remove', {'id': product.id}) }}" method="post" class="m-0">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart-remove' ~ product.id) }}">
+                                    <button type="submit">
+                                        <i class="bi bi-dash-square"></i>
+                                    </button>
+                                </form>
 
-                            <span>|</span>
+                                <span>|</span>
 
-                            <form action="{{ path('app_cart_add', {'id': product.id}) }}" method="post" class="m-0">
-                                <input type="hidden" name="_token" value="{{ csrf_token('cart-add' ~ product.id) }}">
-                                <button type="submit">
-                                    <i class="bi bi-plus-square"></i>
-                                </button>
-                            </form>
-                        </div>
+                                <form action="{{ path('app_cart_add', {'id': product.id}) }}" method="post" class="m-0">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('cart-add' ~ product.id) }}">
+                                    <button type="submit">
+                                        <i class="bi bi-plus-square"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
 
                 {% else %}
@@ -109,6 +100,8 @@
 
         {% else %}
             <p>Aucune vente prévue pour le moment.</p>
-        {% endfor %}    </div>
+        {% endfor %}
+
+    </div>
 
 {% endblock %}

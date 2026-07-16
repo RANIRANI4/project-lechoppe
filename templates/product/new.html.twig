@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Product{% endblock %}
+{% block title %}Ajouter un Produit{% endblock %}
 
 {% block body %}
-<div class=" w-75 mx-auto">
-    <div class="d-flex  justify-content-between py-3">
+    <div class=" w-75 mx-auto">
+        <div class="d-flex  justify-content-between py-3">
 
-        <h5>
-            Je crée un produit
-        </h5>
-        <a href="{{ path('app_product_index') }}" class="btn-beige">Annuler</a>
-        </a>
-    </div>
+            <h5>
+                Je crée un produit
+            </h5>
+            <a href="{{ path('app_product_index') }}" class="btn-beige">Annuler</a>
+            </a>
+        </div>
     {{ include('product/_form.html.twig') }}
 
-    {% endblock %}
+{% endblock %}

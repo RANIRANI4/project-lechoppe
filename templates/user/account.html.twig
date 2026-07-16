@@ -1,52 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Create user{% endblock %}
+{% block title %}Mon compte{% endblock %}
 
 
 {% block body %}
-    <h5>Mon compte</h5>
-
-    <div class="row g-3">
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card bg-light-theme rounded-4">
-                <div class="card-body">
-                    <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">{{ user.email }}</h6>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="py-5">
         <div class="d-flex justify-content-between py-3">
-            <h5>Mes échoppes</h5>
-            <a href="{{ path('app_shop_new') }}" class="btn-beige">
-                Créer une échoppe
+            <h5>Mon compte</h5>
+            <a href="{{ path('app_logout') }}" class="btn-my-danger d-md-none">
+                Déconnexion
             </a>
         </div>
 
-        <div class="row g-3 py-3">
-            {% for shop in user.getShops %}
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 rounded-4 bg-light-theme">
-                        {% if shop.imageFileName %}
+
+        <div class="row g-3">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card bg-light-theme rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ user.email }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-5">
+            <div class="d-flex justify-content-between py-3">
+                <h5>Mes échoppes</h5>
+                <a href="{{ path('app_shop_new') }}" class="btn-beige">
+                    Créer une échoppe
+                </a>
+            </div>
+
+            <div class="row g-3 py-3">
+                {% for shop in user.getShops %}
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card h-100 rounded-4 bg-light-theme">
                             <img src="{{ asset('uploads/shops/' ~ shop.imageFileName) }}"
                                  class="card-img-top rounded-3" alt="illustration de l'échoppe"
                                  style="width: 100%; height: 200px; object-fit: cover;">
-                        {% else %}
-                            <img src="{{ asset('images/default-shop.png') }}" class="card-img-top"
-                                 alt="image par défaut">
-                        {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ shop.name }}</h5>
-                            <p class="card-text">{{ shop.address }}, {{ shop.zipCode }} {{ shop.city }}</p>
-                            <a href="{{ path('app_shop_show', {'id': shop.id}) }}" class="btn-green">Voir l'échoppe</a>
+
+                            <div class="card-body">
+                                <h5 class="card-title">{{ shop.name }}</h5>
+                                <p class="card-text">{{ shop.address }}, {{ shop.zipCode }} {{ shop.city }}</p>
+                                <a href="{{ path('app_shop_show', {'id': shop.id}) }}" class="btn-green">Voir
+                                    l'échoppe</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% else %}
-                <p>Vous n'avez pas encore d'échoppe.</p>
-            {% endfor %}
+                {% else %}
+                    <p>Vous n'avez pas encore d'échoppe.</p>
+                {% endfor %}
+            </div>
         </div>
     </div>
 

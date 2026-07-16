@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande n°{{ order.id }}{% endblock %}
+
+{% block body %}
+    <div class="container py-4 pb-5 mb-5">
+
+        {# En-tête : titre + badge + bouton retour #}
+        <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center gap-3 mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <h2 class="mb-0">Commande n°{{ order.id }}</h2>
+                <span class="badge rounded-pill px-3 py-2
+                    {% if order.status.value == 'to_prepare' %}bg-warning text-dark
+                    {% elseif order.status.value == 'ready' %}bg-info text-dark
+                    {% elseif order.status.value == 'collected' %}bg-success
+                    {% endif %}">
+                    {{ order.status.label }}
+                </span>
+            </div>
+            <a href="{{ path('app_producer_orders') }}" class="btn-beige">
+                <i class="bi bi-arrow-left"></i> Retour
+            </a>
+        </div>
+
+        <div class="row">
+            {# Colonne gauche : infos client #}
+            <div class="col-12 col-md-5 mb-4">
+                <div class="card bg-light-theme border-0 rounded-4 p-4">
+                    <h5 class="mb-3">Client</h5>
+                    <p class="mb-2">
+                        <strong>{{ order.consumer.name }}</strong>
+                    </p>
+                    <p class="mb-2">
+                        <i class="bi bi-telephone"></i>
+                        <a href="tel:{{ order.consumer.phoneNumber }}">
+                            {{ order.consumer.phoneNumber }}
+                        </a>
+                    </p>
+                    <p class="mb-0">
+                        <i class="bi bi-envelope"></i>
+                        <a href="mailto:{{ order.consumer.email }}">
+                            {{ order.consumer.email }}
+                        </a>
+                    </p>
+
+                    <hr>
+
+                    <h6 class="mb-2">Commande passée le</h6>
+                    <p class="mb-0">{{ order.createdAt|date('d/m/Y à H:i') }}</p>
+                </div>
+            </div>
+
+            {# Colonne droite : produits commandés #}
+            <div class="col-12 col-md-7">
+                <div class="card bg-light-theme border-0 rounded-4 p-4">
+                    <h5 class="mb-3">Produits commandés</h5>
+
+                    {% for item in order.customerOrderItems %}
+                        {# On n'affiche que les items qui appartiennent au producteur connecté #}
+                        {% if item.product.producer == app.user %}
+                            <div class="d-flex justify-content-between py-2 border-bottom">
+                                <div>
+                                    <strong>{{ item.quantity }} × {{ item.product.title }}</strong><br>
+                                    <small class="text-muted">
+                                        {{ item.unitPriceAtPurchase|number_format(2, ',', ' ') }}€ / unité
+                                    </small>
+                                </div>
+                                <div class="fw-bold">
+                                    {{ (item.quantity * item.unitPriceAtPurchase)|number_format(2, ',', ' ') }}€
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {# Actions : boutons de changement de statut #}
+        <div class="card bg-light-theme border-0 rounded-4 p-4 mt-4">
+            <h5 class="mb-3">Changer le statut</h5>
+            <div class="d-flex flex-column flex-md-row gap-2">
+
+                {% if order.status.value != 'to_prepare' %}
+                    <form action="{{ path('app_producer_order_update_status', {'id': order.id}) }}" method="post" class="m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('update-status' ~ order.id) }}">
+                        <input type="hidden" name="status" value="to_prepare">
+                        <button type="submit" class="btn-beige w-100">
+                            <i class="bi bi-arrow-counterclockwise"></i> Marquer à préparer
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if order.status.value != 'ready' %}
+                    <form action="{{ path('app_producer_order_update_status', {'id': order.id}) }}" method="post" class="m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('update-status' ~ order.id) }}">
+                        <input type="hidden" name="status" value="ready">
+                        <button type="submit" class="btn-beige w-100">
+                            <i class="bi bi-box-seam"></i> Marquer comme prête
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% if order.status.value != 'collected' %}
+                    <form action="{{ path('app_producer_order_update_status', {'id': order.id}) }}" method="post" class="m-0">
+                        <input type="hidden" name="_token" value="{{ csrf_token('update-status' ~ order.id) }}">
+                        <input type="hidden" name="status" value="collected">
+                        <button type="submit" class="btn-green w-100">
+                            <i class="bi bi-check-lg"></i> Marquer comme retirée
+                        </button>
+                    </form>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

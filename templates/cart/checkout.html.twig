@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Valider ma commande{% endblock %}
+
+{% block body %}
+    <div class="container py-4 pb-5 mb-5">
+        <h2 class="mb-4">Valider ma commande</h2>
+
+        <div class="row">
+            {# Récap du panier à gauche #}
+            <div class="col-12 col-md-5 mb-4">
+                <div class="card bg-light-theme border-0 rounded-4 p-4">
+                    <h5 class="mb-3">Votre commande</h5>
+
+                    {% for item in items %}
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span>{{ item.quantity }} × {{ item.product.title }}</span>
+                            <span class="fw-bold">{{ item.subtotal|number_format(2, ',', ' ') }}€</span>
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-flex justify-content-between pt-3">
+                        <h5 class="mb-0">Total</h5>
+                        <h5 class="mb-0">{{ total|number_format(2, ',', ' ') }}€</h5>
+                    </div>
+                </div>
+            </div>
+
+            {# Formulaire à droite #}
+            <div class="col-12 col-md-7">
+                <div class="card bg-light-theme border-0 rounded-4 p-4">
+                    <h5 class="mb-3">Vos informations</h5>
+                    <p class="text-muted small mb-4">
+                        Ces informations permettent au producteur de vous identifier lors du retrait.
+                        Le paiement se fait sur place.
+                    </p>
+
+                    {{ form_start(form) }}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.phoneNumber) }}
+                    {{ form_row(form.email) }}
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ path('app_cart_show') }}" class="btn-beige">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </a>
+                        <button type="submit" class="btn-green">
+                            Valider <i class="bi bi-check-lg"></i>
+                        </button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

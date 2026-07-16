@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes reçues{% endblock %}
+
+{% block body %}
+    <div class="container py-4 pb-5 mb-5">
+        <h2 class="mb-4">Mes commandes reçues</h2>
+
+        {% if orders is empty %}
+            <div class="text-center py-5">
+                <p class="fs-5">Vous n'avez encore reçu aucune commande.</p>
+            </div>
+        {% else %}
+            <div class="d-flex flex-column gap-3">
+                {% for order in orders %}
+                    <a href="{{ path('app_producer_order_show', {'id': order.id}) }}"
+                       class="text-decoration-none text-dark">
+                        <div class="card bg-light-theme border-0 rounded-4 p-3">
+
+                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">Commande n°{{ order.id }}</h5>
+                                    <small class="text-muted">
+                                        {{ order.createdAt|date('d/m/Y à H:i') }} — {{ order.consumer.name }}
+                                    </small>
+                                </div>
+
+                                <div class="text-end">
+                                    <div class="fw-bold fs-5">{{ order.total|number_format(2, ',', ' ') }}€</div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-2">
+                                <span class="badge rounded-pill px-3 py-2
+                                    {% if order.status.value == 'to_prepare' %}bg-warning text-dark
+                                    {% elseif order.status.value == 'ready' %}bg-info text-dark
+                                    {% elseif order.status.value == 'collected' %}bg-success
+                                    {% endif %}">
+                                    {{ order.status.label }}
+                                </span>
+                            </div>
+
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

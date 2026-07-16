@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\SellSlot;
+use App\Enum\EnumState;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -67,10 +69,20 @@ class CartService
                 continue;
             }
 
+            $sellSlot = null;
+            foreach ($product->getSellSlots() as $slot) {
+                if ($slot->getState() === EnumState::Active) {
+                    $sellSlot = $slot;
+                    break;
+                }
+            }
+
             $items[] = [
                 'product' => $product,
                 'quantity' => $quantity,
                 'subtotal' => $product->getPrice() * $quantity,
+                'shop' => $sellSlot?->getShop(),
+                'sellSlot' => $sellSlot,
             ];
         }
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\CustomerOrder;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,24 @@ class CustomerOrderRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, CustomerOrder::class);
+    }
+
+    /**
+     * Retourne toutes les commandes contenant au moins un produit du producteur donné.
+     *
+     * @return CustomerOrder[]
+     */
+    public function findByProducer(User $producer): array
+    {
+        return $this->createQueryBuilder('o')
+            ->innerJoin('o.customerOrderItems', 'oi')
+            ->innerJoin('oi.product', 'p')
+            ->where('p.producer = :producer')
+            ->setParameter('producer', $producer)
+            ->orderBy('o.createdAt', 'DESC')
+            ->groupBy('o.id')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

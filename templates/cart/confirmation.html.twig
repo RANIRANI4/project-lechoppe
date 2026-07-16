@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande confirmée{% endblock %}
+
+{% block body %}
+    <div class="container py-5 pb-5 mb-5">
+        <div class="text-center mb-4">
+            <h2 class="mt-3">Merci pour votre commande !</h2>
+            <p class="fs-5">
+                Commande n°<strong>{{ order.id }}</strong>
+            </p>
+        </div>
+
+        <div class="card bg-light-theme border-0 rounded-4 p-4 mx-auto" style="max-width: 700px;">
+
+            {# Infos du consommateur #}
+            <h5 class="mb-3">Vos informations</h5>
+            <p class="mb-4">
+                <strong>{{ order.consumer.name }}</strong><br>
+                <i class="bi bi-telephone"></i> {{ order.consumer.phoneNumber }}<br>
+                <i class="bi bi-envelope"></i> {{ order.consumer.email }}
+            </p>
+
+            {# Récap des produits #}
+            <h5 class="mb-3">Récapitulatif</h5>
+            {% for item in order.customerOrderItems %}
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span>{{ item.quantity }} × {{ item.product.title }}</span>
+                    <span class="fw-bold">
+                        {{ (item.quantity * item.unitPriceAtPurchase)|number_format(2, ',', ' ') }}€
+                    </span>
+                </div>
+            {% endfor %}
+
+            <div class="d-flex justify-content-between pt-3">
+                <h5 class="mb-0">Total à régler sur place</h5>
+                <h5 class="mb-0">{{ order.total|number_format(2, ',', ' ') }}€</h5>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_home') }}" class="btn-green">
+                Continuer mes achats
+            </a>
+        </div>
+    </div>
+{% endblock %}

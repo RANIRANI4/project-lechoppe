@@ -82,3 +82,12 @@
         }
     }
 }
+
+.add-remove-block {
+    display: flex !important;
+
+    @media (min-width: 768px) {
+        display: inline-flex !important;
+        max-width: 180px;
+    }
+}

@@ -16,7 +16,7 @@ final class ShopController extends AbstractController
 {
 
 
-    #[Route('/shop',name: 'app_shop_index', methods: ['GET'])]
+    #[Route('/shop', name: 'app_shop_index', methods: ['GET'])]
     public function index(ShopRepository $shopRepository): Response
     {
         return $this->render('shop/index.html.twig', [
@@ -28,7 +28,9 @@ final class ShopController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, GeocoderService $geocoder): Response
     {
         $shop = new Shop();
-        $form = $this->createForm(ShopFormType::class, $shop);
+        $form = $this->createForm(ShopFormType::class, $shop, [
+            'require_image' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,6 +76,10 @@ final class ShopController extends AbstractController
     #[Route('/user/shop/{id}/edit', name: 'app_shop_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Shop $shop, EntityManagerInterface $entityManager, GeocoderService $geocoder): Response
     {
+        if ($shop->getProducer() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('erreur');
+        }
+
         $form = $this->createForm(ShopFormType::class, $shop);
         $form->handleRequest($request);
 
@@ -102,16 +108,5 @@ final class ShopController extends AbstractController
             'shop' => $shop,
             'form' => $form,
         ]);
-    }
-
-    #[Route('/user/shop/{id}', name: 'app_shop_delete', methods: ['POST'])]
-    public function delete(Request $request, Shop $shop, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $shop->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($shop);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_user_account', [], Response::HTTP_SEE_OTHER);
     }
 }

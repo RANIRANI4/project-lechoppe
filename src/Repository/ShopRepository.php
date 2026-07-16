@@ -17,6 +17,28 @@ class ShopRepository extends ServiceEntityRepository
         parent::__construct($registry, Shop::class);
     }
 
+    public function findPaginated(int $page = 1, int $limit = 12): array
+    {
+        $offset = ($page - 1) * $limit;
+
+        $shops = $this->createQueryBuilder('s')
+            ->orderBy('s.id', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        $total = (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return [
+            'shops' => $shops,
+            'total' => $total,
+        ];
+    }
+
     public function findByDistance(float $lat, float $lng, float $radius = 20): array
     {
         $mappingEntity = new ResultSetMappingBuilder($this->getEntityManager());

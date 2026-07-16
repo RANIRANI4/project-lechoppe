@@ -3,79 +3,108 @@
 {% block title %}Mon panier{% endblock %}
 
 {% block body %}
-<div class="container py-4 pb-5 mb-5">
-    <h2 class="mb-4">Mon panier</h2>
+    <div class="container py-4 pb-5 mb-5">
+        <h2 class="mb-4">Mon panier</h2>
 
+        {% if items is empty %}
+            <div class="text-center py-5">
+                <p class="fs-5">Votre panier est vide.</p>
+                <a href="{{ path('app_home') }}" class="btn-green mt-3">
+                    Voir les échoppes
+                </a>
+            </div>
+        {% else %}
 
-    <div class="card bg-light-theme border-0 rounded-4 p-4">
-        {% for item in items %}
-            <div class="d-flex flex-wrap align-items-center gap-3 py-3 border-bottom">
+            <div class="card bg-light-theme border-0 rounded-4 p-4">
+                {% for item in items %}
+                    <div class="d-flex flex-wrap align-items-center gap-3 py-3 border-bottom">
 
-                {# Image #}
-                {% if item.product.imageFileName %}
-                    <img src="{{ asset('uploads/products/' ~ item.product.imageFileName) }}"
-                         alt="{{ item.product.title }}"
-                         style="width: 80px; height: 80px; object-fit: cover;"
-                         class="rounded-3 flex-shrink-0">
-                {% else %}
-                    <img src="{{ asset('images/default-product.png') }}"
-                         alt="image par défaut"
-                         style="width: 80px; height: 80px; object-fit: cover;"
-                         class="rounded-3 flex-shrink-0">
-                {% endif %}
+                        {# Image #}
+                        {% if item.product.imageFileName %}
+                            <img src="{{ asset('uploads/products/' ~ item.product.imageFileName) }}"
+                                 alt="{{ item.product.title }}"
+                                 style="width: 80px; height: 80px; object-fit: cover;"
+                                 class="rounded-3 flex-shrink-0">
+                        {% else %}
+                            <img src="{{ asset('images/default-product.png') }}"
+                                 alt="image par défaut"
+                                 style="width: 80px; height: 80px; object-fit: cover;"
+                                 class="rounded-3 flex-shrink-0">
+                        {% endif %}
 
-                {# Titre + prix unitaire #}
-                <div class="flex-grow-1" style="min-width: 150px;">
-                    <h5 class="mb-1">{{ item.product.title }}</h5>
-                    <small class="text-muted">{{ item.product.price }}€ {{ item.product.unit }}</small>
+                        <div class="flex-grow-1" style="min-width: 150px;">
+                            <h5 class="mb-1">{{ item.product.title }}</h5>
+                            <small class="text-muted">{{ item.product.price }}€ {{ item.product.unit }}</small>
+
+                            {% if item.shop %}
+                                <div class="small text-muted mt-1">
+                                    <i class="bi bi-geo-alt"></i>
+                                    {{ item.shop.address }}, {{ item.shop.zipCode }} {{ item.shop.city }}
+                                </div>
+                            {% endif %}
+
+                            {% if item.sellSlot and item.sellSlot.startDate %}
+                                <div class="small text-muted">
+                                    <i class="bi bi-calendar-event"></i>
+                                    {{ item.sellSlot.startDate|date('d/m/Y à H:i') }}
+                                    {% if item.sellSlot.endDate %}
+                                        – {{ item.sellSlot.endDate|date('H:i') }}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {# Sous-total #}
+                        <div class="fw-bold ms-auto order-md-last" style="min-width: 80px; text-align: right;">
+                            {{ item.subtotal|number_format(2, ',', ' ') }}€
+                        </div>
+
+                        {# Bouton -/+ #}
+                        <div class="add-remove py-2 order-last order-md-0 w-100 w-md-auto">
+                            <form action="{{ path('app_cart_remove', {'id': item.product.id}) }}" method="post"
+                                  class="m-0">
+                                <input type="hidden" name="_token"
+                                       value="{{ csrf_token('cart-remove' ~ item.product.id) }}">
+                                <button type="submit">
+                                    <i class="bi bi-dash-square"></i>
+                                </button>
+                            </form>
+
+                            <span class="text-white fw-bold">{{ item.quantity }}</span>
+
+                            <form action="{{ path('app_cart_add', {'id': item.product.id}) }}" method="post"
+                                  class="m-0">
+                                <input type="hidden" name="_token"
+                                       value="{{ csrf_token('cart-add' ~ item.product.id) }}">
+                                <button type="submit">
+                                    <i class="bi bi-plus-square"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+                {# Total général #}
+                <div class="d-flex justify-content-between align-items-center pt-3">
+                    <h4 class="mb-0">Total</h4>
+                    <h4 class="mb-0">{{ total|number_format(2, ',', ' ') }}€</h4>
                 </div>
+            </div>
 
-                {# Sous-total : à droite du titre sur mobile, tout à droite sur desktop #}
-                <div class="fw-bold ms-auto order-md-last" style="min-width: 80px; text-align: right;">
-                    {{ item.subtotal|number_format(2, ',', ' ') }}€
-                </div>
+            {# Actions #}
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <form action="{{ path('app_cart_clear') }}" method="post" class="m-0">
+                    <input type="hidden" name="_token" value="{{ csrf_token('cart-clear') }}">
+                    <button type="submit" class="btn-my-danger">
+                        <i class="bi bi-trash"></i> Vider
+                    </button>
+                </form>
 
-                {# Boutons -/+ : sur toute la largeur en dessous sur mobile, au milieu sur desktop #}
-                <div class="add-remove py-2 w-100 order-last w-md-auto order-md-0">
-                    <form action="{{ path('app_cart_remove', {'id': item.product.id}) }}" method="post" class="m-0">
-                        <input type="hidden" name="_token" value="{{ csrf_token('cart-remove' ~ item.product.id) }}">
-                        <button type="submit">
-                            <i class="bi bi-dash-square"></i>
-                        </button>
-                    </form>
+                <a href="{{ path('app_cart_checkout') }}" class="btn-green">
+                    Valider <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
 
-                    <span class="text-white fw-bold">{{ item.quantity }}</span>
-
-                    <form action="{{ path('app_cart_add', {'id': item.product.id}) }}" method="post" class="m-0">
-                        <input type="hidden" name="_token" value="{{ csrf_token('cart-add' ~ item.product.id) }}">
-                        <button type="submit">
-                            <i class="bi bi-plus-square"></i>
-                        </button>
-                    </form>
-                </div>
-
-            </div>                {% endfor %}
-
-        {# Total général #}
-        <div class="d-flex justify-content-between align-items-center pt-3">
-            <h4 class="mb-0">Total</h4>
-            <h4 class="mb-0">{{ total|number_format(2, ',', ' ') }}€</h4>
-        </div>
+        {% endif %}
     </div>
-
-    {# Actions #}
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <form action="{{ path('app_cart_clear') }}" method="post" class="m-0">
-            <input type="hidden" name="_token" value="{{ csrf_token('cart-clear') }}">
-            <button type="submit" class="btn-my-danger">
-                <i class="bi bi-trash"></i> Vider
-            </button>
-        </form>
-
-        <a href="#" class="btn-green">
-            Valider <i class="bi bi-arrow-right"></i>
-        </a>
-    </div>
-
-</div>
 {% endblock %}

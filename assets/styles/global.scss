@@ -83,3 +83,9 @@ small {
 .text-my-black {
     color: $myBlack !important;
 }
+
+@media (min-width: 768px) {
+    .w-md-auto {
+        width: auto !important;
+    }
+}

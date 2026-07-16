@@ -1,16 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Product{% endblock %}
-
+{% block title %}{{ product.title }} — L'Échoppe{% endblock %}{% block meta_description %}{{ product.description|striptags|slice(0, 155) }}{% endblock %}
 {% block body %}
 
-    <div class="container py-3">
+    <div class="container py-3 pb-5 mb-5">
         <div class="row">
 
             <div class="col-12 col-md-5">
                 {% if product.imageFileName %}
                     <img src="{{ asset('uploads/products/' ~ product.imageFileName) }}"
-                         class="img-fluid rounded-3" alt="illustration de l'échoppe"
+                         class="img-fluid rounded-3" alt="illustration du produit"
                          style="height: 300px; object-fit: cover; width: 100%;">
                 {% else %}
                     <img src="{{ asset('images/default-product.png') }}"
@@ -23,15 +22,35 @@
                 <h4>{{ product.price }}€ / {{ product.unit }}</h4>
                 <p>{{ product.description }}</p>
 
-                <div class="d-flex gap-3 py-3">
-                    <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn-beige">
-                        Modifier le produit
-                    </a>
-                    <a href="{{ path('app_product_add_sell_slot', {'id': product.id}) }}" class="btn-beige">
-                        Ajouter à un créneau
-                    </a>
-                    {{ include('product/_delete_form.html.twig') }}
-                </div>
+                {% if not app.user %}
+                    <div class="add-remove add-remove-block py-2 my-3">                        <form action="{{ path('app_cart_remove', {'id': product.id}) }}" method="post" class="m-0">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart-remove' ~ product.id) }}">
+                            <button type="submit">
+                                <i class="bi bi-dash-square"></i>
+                            </button>
+                        </form>
+
+                        <span class="text-white fw-bold">{{ cart_quantity(product.id) }}</span>
+
+                        <form action="{{ path('app_cart_add', {'id': product.id}) }}" method="post" class="m-0">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cart-add' ~ product.id) }}">
+                            <button type="submit">
+                                <i class="bi bi-plus-square"></i>
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+                {% if app.user and app.user == product.producer %}
+                    <div class="d-flex flex-column flex-md-row gap-2 py-3">
+                        <a href="{{ path('app_product_edit', {'id': product.id}) }}" class="btn-beige">
+                            Modifier
+                        </a>
+                        <a href="{{ path('app_product_add_sell_slot', {'id': product.id}) }}" class="btn-beige">
+                            Ajouter à une vente
+                        </a>
+                        {{ include('product/_delete_form.html.twig') }}
+                    </div>
+                {% endif %}
             </div>
 
         </div>

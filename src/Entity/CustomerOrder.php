@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnumOrderStatus;
 use App\Repository\CustomerOrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,6 +22,9 @@ class CustomerOrder
 
     #[ORM\Column]
     private ?\DateTime $createdAt = null;
+
+    #[ORM\Column(type: 'string', enumType: EnumOrderStatus::class)]
+    private EnumOrderStatus $status = EnumOrderStatus::ToPrepare;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -87,6 +91,17 @@ class CustomerOrder
     public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTime();
+    }
+
+    public function getStatus(): EnumOrderStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(EnumOrderStatus $status): static
+    {
+        $this->status = $status;
+        return $this;
     }
 
     /**

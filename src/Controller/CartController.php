@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Consumer;
+use App\Entity\CustomerOrder;
+use App\Entity\CustomerOrderItem;
 use App\Entity\Product;
+use App\Form\ConsumerType;
 use App\Service\CartService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,5 +54,60 @@ final class CartController extends AbstractController
         }
 
         return $this->redirectToRoute('app_cart_show');
+    }
+
+    #[Route('/checkout', name: 'app_cart_checkout', methods: ['GET', 'POST'])]
+    public function checkout(
+        Request                $request,
+        CartService            $cartService,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        if ($cartService->count() === 0) {
+            return $this->redirectToRoute('app_cart_show');
+        }
+
+        $consumer = new Consumer();
+        $form = $this->createForm(ConsumerType::class, $consumer);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $order = new CustomerOrder();
+            $order->setConsumer($consumer);
+            $order->setTotal($cartService->getTotal());
+
+            foreach ($cartService->getAll() as $item) {
+                $orderItem = new CustomerOrderItem();
+                $orderItem->setProduct($item['product']);
+                $orderItem->setQuantity($item['quantity']);
+                $orderItem->setUnitPriceAtPurchase($item['product']->getPrice());
+
+                $order->addCustomerOrderItem($orderItem);
+            }
+
+            $entityManager->persist($order);
+            $entityManager->flush();
+
+            $cartService->clear();
+
+            return $this->redirectToRoute('app_cart_confirmation', [
+                'id' => $order->getId()
+            ]);
+        }
+
+        return $this->render('cart/checkout.html.twig', [
+            'form' => $form,
+            'total' => $cartService->getTotal(),
+            'items' => $cartService->getAll(),
+        ]);
+    }
+
+    #[Route('/confirmation/{id}', name: 'app_cart_confirmation', methods: ['GET'])]
+    public function confirmation(CustomerOrder $order): Response
+    {
+        return $this->render('cart/confirmation.html.twig', [
+            'order' => $order,
+        ]);
     }
 }
